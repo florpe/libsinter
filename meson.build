@@ -1,0 +1,25 @@
+project(
+  'sinter'
+  , ['c']
+  , version: '0.0.1'
+  , meson_version: '>= 0.42'
+  )
+
+libsinter = library(
+  'libsinter'
+  , sources: [
+    'lib/mount.h'
+    , 'lib/mount.c'
+    ]
+  , c_args: ['-Wall']
+  )
+
+executable(
+  'sinter'
+  , sources: [
+    'util/sinter.c'
+    , 'lib/mount.h'
+    ]
+  , c_args: ['-Wall']
+  , link_with: libsinter
+  )
