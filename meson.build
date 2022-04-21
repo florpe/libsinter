@@ -6,7 +6,7 @@ project(
   )
 
 libsinter = library(
-  'libsinter'
+  'sinter'
   , sources: [
     'lib/mount.h'
     , 'lib/mount.c'
