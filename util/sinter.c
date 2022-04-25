@@ -7,10 +7,10 @@
 #include "lib/mount.h"
 
 
-int do_exec(char *mnt, char* options, int flags, int execc, char *execv[]) {
+/*int do_exec(char *mnt, char* options, int flags, int execc, char *execv[]) {
     printf("Should do exec here\n");
     return -1;
-}
+}*/
 
 int do_socket(char *sock, char* options, int flags, char* socketpath) {
     printf("Should run socket here\n");
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
         printf("Should print usage of %s here.", argv[0]);
         res = 0;
     }
-    if( strcmp(argv[1], "-m") == 0 ) {
+    else if( strcmp(argv[1], "-m") == 0 ) {
         if( argc != 4 ) {
             printf("Bad arguments for mount operation.\n");
             return EINVAL;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
             printf("Bad arguments for exec operation.\n");
             return EINVAL;
         }
-        res = do_exec(argv[2], argv[3], MS_RDONLY | MS_NOSUID, argc - 5, argv + 5);
+        res = do_exec(argv[2], argv[3], MS_RDONLY | MS_NOSUID, argv + 5);
     }
     else if( strcmp(argv[1], "-s") == 0 ) {
         if( argc != 5 ) {

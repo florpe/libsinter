@@ -12,6 +12,7 @@ libsinter = library(
     , 'lib/mount.c'
     ]
   , c_args: ['-Wall']
+  , link_args: ['-lcap']
   )
 
 executable(
@@ -21,5 +22,6 @@ executable(
     , 'lib/mount.h'
     ]
   , c_args: ['-Wall']
+  , link_args: ['-lcap']
   , link_with: libsinter
   )
