@@ -20,8 +20,9 @@ executable(
   , sources: [
     'util/sinter.c'
     , 'lib/mount.h'
+    , 'lib/mount.c'
     ]
   , c_args: ['-Wall']
   , link_args: ['-lcap']
-  , link_with: libsinter
+  #  , link_with: libsinter
   )
