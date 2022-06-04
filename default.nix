@@ -18,11 +18,7 @@ pkgs.stdenv.mkDerivation rec {
   };
   builder = builtins.toFile "builder.sh" ''
     source $stdenv/setup
-    echo FOOOO $src
     cd $src
-    pwd
-    ls
-    ls /
     meson setup /build
     meson compile -C /build
     cp -r /build $out
