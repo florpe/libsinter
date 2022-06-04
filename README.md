@@ -1,4 +1,4 @@
-# Libsinter
+# libsinter
 
 A more opinionated, less encompassing alternative to libfuse. With capabilities!
 
