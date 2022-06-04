@@ -1,6 +1,6 @@
 # Libsinter
 
-A more opinionated alternative to libfuse.
+A more opinionated, less encompassing alternative to libfuse. With capabilities!
 
 ## Modes
 
