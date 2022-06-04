@@ -2,17 +2,14 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <sys/mount.h>
+#include <unistd.h>
 
 #include "lib/mount.h"
 
 
 
-int do_unmount(char *sock) {
-    printf("Should do unmount here\n");
-    errno = ENOSYS;
-    return -1;
-}
 
 int is_help_flag (char *argv[]) {
     if( strcmp(argv[1], "-h") == 0 ) {
@@ -25,9 +22,11 @@ int is_help_flag (char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
+    int uid = getuid();
 
     int res;
-    int mountflags = 0;
+    int flags = 0;
+    char *mnt_abs;
 
     if( argc == 1 || ( argc == 2 && is_help_flag(argv) == 0 ) ) {
         printf("Should print usage of %s here.", argv[0]);
@@ -38,25 +37,34 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Bad arguments for mount operation.\n");
             return EINVAL;
         }
-        mountflags = parse_mountflags(argv[3]);
-        res = do_mount(argv[2], argv[4], mountflags);
+        flags = parse_mountflags(argv[3]);
+        res = do_mount(argv[2], argv[4], flags);
     }
     else if( strcmp(argv[1], "-e") == 0 ) {
         if( argc < 7 || strcmp(argv[5], "--") != 0 ) {
             fprintf(stderr, "Bad arguments for exec operation.\n");
             return EINVAL;
         }
-        mountflags = parse_mountflags(argv[3]);
-        res = do_exec(argv[2], argv[4], mountflags, argv + 6);
+        flags = parse_mountflags(argv[3]);
+        res = do_exec(argv[2], argv[4], flags, argv + 6);
     }
     else if( strcmp(argv[1], "-u") == 0 ) {
-        if( argc != 3 ) {
-            fprintf(stderr, "Bad arguments for unmount operation.\n");
+        if( argc != 4 ) {
+            fprintf(stderr, "Bad arguments for umount operation.\n");
             return EINVAL;
         }
-        res = do_unmount(argv[2]);
-    }
-    else {
+        mnt_abs = realpath(argv[2], NULL);
+        if( mnt_abs == NULL ) {
+            printf("Bad umount path\n");
+            return EINVAL;
+        }
+        flags = parse_umountflags(argv[3]);
+        if( flags == -1 ) {
+            printf("Bad umount flags\n");
+            return EINVAL;
+        }
+        res = do_umount(uid, mnt_abs, flags);
+    } else {
         fprintf(stderr, "Invalid mode of operation: %s\n", argv[1]);
         return EINVAL;
     }

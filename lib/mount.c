@@ -1,6 +1,8 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
+#include <mntent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,9 +16,35 @@
 #include "mount.h"
 
 #define FUSEDEVICE "/dev/fuse"
-#define FUSEFSTYPE "fuse"
-#define FUSESOURCE "sinter"
+#define PROCMOUNTS "/proc/mounts"
+
 #define FUSEFDVAR "FUSEFD"
+
+#define FUSEFSTYPE "fuse"
+#define FUSESOURCE_FMT_PREFIX "sinter-0x%.4X-"
+#define FUSESOURCE_FMT_ENTIRE "sinter-0x%.4X-%s"
+
+char *make_source_entry(int uid, char *suffix) {
+    /* Wrapper for creating the mnt_fsname entry in PROCMOUNTS. Returns
+     * a pointer to the complete entry string, which must be deallocated
+     * after use.
+     * If suffix is NULL, returns only the prefix.
+     */
+    const int len = 1 + (
+        ( suffix == NULL)
+            ? snprintf(NULL, 0, FUSESOURCE_FMT_PREFIX, uid)
+            : snprintf(NULL, 0, FUSESOURCE_FMT_ENTIRE, uid, suffix)
+        );
+    char *res = calloc(len, sizeof(char));
+    if( res == NULL ) {
+        return NULL;
+    }
+    ( suffix == NULL ) ?
+        sprintf(res, FUSESOURCE_FMT_PREFIX, uid)
+        : sprintf(res, FUSESOURCE_FMT_ENTIRE, uid, suffix)
+        ;
+    return res;
+}
 
 int check_capabilities() {
     /* Make sure that the running process is able to mount using
@@ -53,6 +81,9 @@ int check_capabilities() {
 }
 
 int parse_mountflags(char *flags) {
+    /* TODO: This is an atrocity.
+     * NOSUIDIRTIME would parse.
+     */
     int res = 0;
     if( strstr(flags, "REMOUNT") != NULL ) {
         res |= MS_REMOUNT;
@@ -123,6 +154,24 @@ int parse_mountflags(char *flags) {
     return res;
 }
 
+int parse_umountflags(char *flagnames) {
+    int res = 0;
+    char *flag = strtok(flagnames, ",");
+    while( flag != NULL ) {
+        if( strcmp(flag, "NOFLAG") == 0 ) {}
+        else if( strcmp(flag, "FORCE") == 0 ) { res |= MNT_FORCE; }
+        else if( strcmp(flag, "DETACH") == 0 ) { res |= MNT_DETACH; }
+        else if( strcmp(flag, "EXPIRE") == 0 ) { res |= MNT_EXPIRE; }
+        else if( strcmp(flag, "NOFOLLOW") == 0 ) { res |= UMOUNT_NOFOLLOW; }
+        else {
+            errno = EINVAL;
+            return -1;
+        };
+        flag = strtok(NULL, ",");
+    }
+    return res;
+}
+
 int check_mountpoint(char *mnt) {
     /* Check that the running process is either owned by root, or
      *   * the mountpoint is a directory, and
@@ -156,6 +205,83 @@ int check_mountpoint(char *mnt) {
     }
     fprintf(stderr, "Mount point looks good.\n");
     return 0;
+}
+
+
+int check_umountpoint(int uid, char *umnt) {
+    /* Check if the unmount should be allowed based on the cookie in the
+     * mnt_fsname field. Relies on PROCMOUNTS being ordered, the lowest
+     * value corresponding to the topmost mount. Since the last entry
+     * matching the mountpoint takes precedent, the check will only
+     * succeed if the topmost mount has the right cookie.
+     * The mountpoint must be given as an absolute path.
+     */
+    int res;
+
+    char *fsprefix;
+    int prefixlen;
+    FILE *procmounts;
+    struct mntent *nextmount;
+
+    fsprefix = make_source_entry(uid, NULL);
+    if( fsprefix == NULL ) {
+        return -1;
+    }
+    prefixlen = strlen(fsprefix);
+
+    procmounts = setmntent(PROCMOUNTS, "r");
+    if( procmounts == NULL ) {
+        free(fsprefix);
+        errno = ENOMEM;
+        return -1;
+    }
+    res = -1;
+    errno = EPERM;
+    nextmount = getmntent(procmounts);
+
+    while( nextmount != NULL ) {
+        if( strcmp(umnt, nextmount->mnt_dir) == 0 ) {
+            if( strncmp(fsprefix, nextmount->mnt_fsname, prefixlen) == 0 ) {
+                errno = 0;
+                res = 0;
+            }
+            else {
+                errno = EPERM;
+                res = -1;
+            }
+        }
+        nextmount = getmntent(procmounts);
+    }
+    endmntent(procmounts);
+    free(fsprefix);
+    return res;
+    }
+
+int do_umount(int uid, char *umnt, int flags) {
+    /* Checks that the cookie in PROCMOUNTS matches and performs an unmount.
+     * Takes an absolute path.
+     *
+     * TODO: This still allows unmounting a file system mounted below one that
+     * passes the check by racing two instances of this function. Probably
+     * needs to lock the directory below the mountpoint (or something similar).
+     */
+    int res = 1;
+    if( uid != 0 && check_umountpoint(uid, umnt) == -1 ) {
+        if( errno == EPERM ) {
+            fprintf(stderr, "Umount not allowed.\n");
+        } else {
+            fprintf(stderr, "Umount permission check error: %i", errno);
+        };
+        res = -1;
+    } else if( umount2(umnt, flags) == 0 ) {
+        fprintf(stderr, "Umount successful.\n");
+        res = 0;
+    } else {
+        fprintf(stderr, "Umount failed with error %i\n", errno);
+        res = -1;
+    };
+    free(umnt);
+    return res;
 }
 
 char *get_fusefd_start(char* options) {
@@ -232,13 +358,14 @@ char *compose_mount_opts(char *options, int fd) {
 
 int do_mount(char *mnt, char* options, int flags) {
     /* Run a mount operation on the file descriptor given.
+     * TODO: Free fusesource
      */
 
     const char *fusefstype = FUSEFSTYPE;
-    const char *fusesource = FUSESOURCE;
-    
+    const char *fusesource = make_source_entry(getuid(), "somesuffix");
+
     int fd;
-    
+
     if( check_capabilities() == -1 ) {
         fprintf(stderr, "Bad cababilities: Error %i\n", errno);
         return -1;
@@ -271,16 +398,17 @@ int do_exec(char *mnt, char* options, int flags, char *execv[]) {
      *   * Perform a mount
      *   * Store the file descriptor in the FUSEFDVAR variable
      *   * Execute the arguments after the -- marker.
+     * TODO: Free fusesource
      */
-    
+
     const char *fusefstype = FUSEFSTYPE;
-    const char *fusesource = FUSESOURCE;
+    const char *fusesource = make_source_entry(getuid(), "somesuffix");
     const char *fusefdvar = FUSEFDVAR;
     const char *fusedevice = FUSEDEVICE;
 
     int fd = get_fusefd(options);
     char *mntopts;
-    
+
     if( check_capabilities() == -1 ) {
         fprintf(stderr, "Bad cababilities: Error %i\n", errno);
         return -1;
