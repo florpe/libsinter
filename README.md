@@ -4,9 +4,9 @@ A more opinionated, less encompassing alternative to libfuse. With capabilities!
 
 ## Modes
 
-    -m MOUNTPOINT MOUNTFLAGS OPTIONS
+    -m MOUNTPOINT FLAGS OPTIONS
         Mounting mode. The fd=X option is required.
-    -e MOUNTPOINT MOUNTFLAGS OPTIONS -- CMD [ CMD ... ]
+    -e MOUNTPOINT FLAGS OPTIONS -- CMD [ CMD ... ]
         Exec mode. Execute everything after -- with regular permissions. The fs=X options must not be set.
-    -u MOUNTPOINT
+    -u MOUNTPOINT FLAGS
         Unmount mode.
