@@ -12,7 +12,7 @@ char *compose_mount_opts(char *options, int fd);
 char *get_fusefd_start(char *options);
 int get_fusefd(char *options);
 int check_fusefd(int fd);
-int do_mount(char *mnt, char* options, int flags);
-int do_exec(char *mnt, char* options, int flags, char *execv[]);
+int do_mount(char *mnt, char* options, int flags, char *tag);
+int do_exec(char *mnt, char* options, int flags, char *tag, char *execv[]);
 int do_umount(int uid, char* mnt, int flags);
 

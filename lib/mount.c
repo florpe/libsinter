@@ -356,13 +356,12 @@ char *compose_mount_opts(char *options, int fd) {
     return outopts;
 }
 
-int do_mount(char *mnt, char* options, int flags) {
+int do_mount(char *mnt, char* options, int flags, char *tag) {
     /* Run a mount operation on the file descriptor given.
-     * TODO: Free fusesource
      */
 
     const char *fusefstype = FUSEFSTYPE;
-    const char *fusesource = make_source_entry(getuid(), "somesuffix");
+    char *fusesource;
 
     int fd;
 
@@ -382,27 +381,35 @@ int do_mount(char *mnt, char* options, int flags) {
     if( check_mountpoint(mnt) == -1 ) {
         return -1;
     }
+
+    fusesource = make_source_entry(getuid(), tag);
+    if( fusesource == NULL ) {
+        fprintf(stderr, "Could not create mount cookie: Error %i\n", errno);
+        return -1;
+    };
     if ( mount(fusesource, mnt, fusefstype, flags, options) == -1 ) {
         fprintf(stderr, "Failed to mount: Error %i\n", errno);
+        free(fusesource);
         return -1;
     }
     fprintf(stderr, "Mounted!\n");
+    free(fusesource);
 
     return 0;
 }
 
-int do_exec(char *mnt, char* options, int flags, char *execv[]) {
+int do_exec(char *mnt, char* options, int flags, char *tag, char *execv[]) {
     /* Performs the following steps:
      *   * Open FUSEDEVICE
      *   * Add the file descriptor to the options
      *   * Perform a mount
      *   * Store the file descriptor in the FUSEFDVAR variable
      *   * Execute the arguments after the -- marker.
-     * TODO: Free fusesource
+     * TODO: Clean up resource management.
      */
 
     const char *fusefstype = FUSEFSTYPE;
-    const char *fusesource = make_source_entry(getuid(), "somesuffix");
+    char *fusesource;
     const char *fusefdvar = FUSEFDVAR;
     const char *fusedevice = FUSEDEVICE;
 
@@ -421,18 +428,35 @@ int do_exec(char *mnt, char* options, int flags, char *execv[]) {
     if( check_mountpoint(mnt) == -1 ) {
         return -1;
     }
+
     fd = open(fusedevice, O_RDWR);
     mntopts = compose_mount_opts(options, fd);
-
     if( mntopts == NULL ) {
         fprintf(stderr, "Failed to compose mount options, errno %i\n", errno);
+
+        close(fd);
         return -1;
     }
+
+    fusesource = make_source_entry(getuid(), tag);
+    if( fusesource == NULL ) {
+        fprintf(stderr, "Could not create mount cookie: Error %i\n", errno);
+
+        close(fd);
+        free(mntopts);
+        return -1;
+    }
+
     if( mount(fusesource, mnt, fusefstype, flags, mntopts) == -1 ) {
         fprintf(stderr, "Failed to mount: Error %i\n", errno);
+        free(fusesource);
+
+        close(fd);
+        free(mntopts);
         return -1;
     }
     fprintf(stderr, "Mounted!\n");
+    free(fusesource);
 
     //Can reuse mntopts buffer to prepare fd string
     if( sprintf(mntopts, "%i", fd) == -1 ) {
@@ -441,6 +465,8 @@ int do_exec(char *mnt, char* options, int flags, char *execv[]) {
             , "Failed to write fd %i to environment: Could not reuse buffer\n"
             , fd
             );
+
+        close(fd);
         free(mntopts);
         return -1;
     }
@@ -450,9 +476,13 @@ int do_exec(char *mnt, char* options, int flags, char *execv[]) {
             , "Failed to write fd %i to environment: Could not set %s\n"
             , fd, fusefdvar
             );
+
+        close(fd);
         free(mntopts);
         return -1;
     }
+
+    //No close(fd) here!
     free(mntopts);
     execvp(execv[0], execv);
     return -1; //To make the compiler happy

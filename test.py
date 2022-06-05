@@ -10,11 +10,12 @@ def main():
     print(options)
     runres = srun(
         [
-            './foo/sinter'
+            './run/sinter'
             , '-m'
             , 'mnt'
             , 'RDONLY'
             , options
+            , 'sometag'
             ]
         , pass_fds=(fusefd,)
         , capture_output=True

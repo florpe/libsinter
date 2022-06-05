@@ -33,20 +33,20 @@ int main(int argc, char *argv[]) {
         res = 0;
     }
     else if( strcmp(argv[1], "-m") == 0 ) {
-        if( argc != 5 ) {
+        if( argc != 6 ) {
             fprintf(stderr, "Bad arguments for mount operation.\n");
             return EINVAL;
         }
         flags = parse_mountflags(argv[3]);
-        res = do_mount(argv[2], argv[4], flags);
+        res = do_mount(argv[2], argv[4], flags, argv[5]);
     }
     else if( strcmp(argv[1], "-e") == 0 ) {
-        if( argc < 7 || strcmp(argv[5], "--") != 0 ) {
+        if( argc < 8 || strcmp(argv[6], "--") != 0 ) {
             fprintf(stderr, "Bad arguments for exec operation.\n");
             return EINVAL;
         }
         flags = parse_mountflags(argv[3]);
-        res = do_exec(argv[2], argv[4], flags, argv + 6);
+        res = do_exec(argv[2], argv[4], flags, argv[5], argv + 7);
     }
     else if( strcmp(argv[1], "-u") == 0 ) {
         if( argc != 4 ) {
