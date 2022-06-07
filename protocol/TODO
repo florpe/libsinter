@@ -1,0 +1,8 @@
+Acknowledge the source: libfuse:include/fuse_kernel.h
+Attach to each opcode the struct name that it carries.
+
+Integrate the flag comments into flags.json
+Find correct values for the "since" entries
+Document less-than-documented structs and values
+Come up with a proper way to communicate struct changes - is "since": ... sufficient?
+Write a script to recreate the original structs and #defines

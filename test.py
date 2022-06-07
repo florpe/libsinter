@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 from os import open as osopen, readv as osreadv, O_RDWR, O_DIRECT
 from subprocess import run as srun

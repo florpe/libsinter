@@ -1,0 +1,342 @@
+{
+  "": {
+    "FUSE_DEV_IOC_CLONE": {
+      "_IOR": [
+        229,
+        0,
+        "uint32_t"
+      ],
+      "since": "v7.31"
+    },
+    "FUSE_IOCTL_MAX_IOV": {
+      "value": 256,
+      "since": "v7.31"
+    },
+    "FUSE_MIN_READ_BUFFER": {
+      "value": 8192,
+      "since": "v7.31",
+      "comment": "The read buffer is required to be at least 8k, but may be much larger"
+    },
+    "FUSE_COMPAT_ENTRY_OUT_SIZE": {
+      "value": 120,
+      "since": "v7.31"
+    },
+    "FUSE_COMPAT_ATTR_OUT_SIZE": {
+      "value": 96,
+      "since": "v7.31"
+    },
+    "FUSE_COMPAT_MKNOD_IN_SIZE": {
+      "value": 8,
+      "since": "v7.31"
+    },
+    "FUSE_COMPAT_WRITE_IN_SIZE": {
+      "value": 24,
+      "since": "v7.31"
+    },
+    "FUSE_COMPAT_STATFS_SIZE": {
+      "value": 48,
+      "since": "v7.31"
+    },
+    "FUSE_COMPAT_INIT_OUT_SIZE": {
+      "value": 8,
+      "since": "v7.31"
+    },
+    "FUSE_COMPAT_22_INIT_OUT_SIZE": {
+      "value": 24,
+      "since": "v7.31"
+    },
+    "CUSE_INIT_INFO_MAX": {
+      "value": 4096,
+      "since": "v7.31"
+    },
+    "FUSE_NAME_OFFSET": {
+      "value": "offsetof(struct fuse_dirent, name)",
+      "since": "v7.31"
+    },
+    "FUSE_DIRENT_ALIGN(x)": {
+      "value": "(((x) + sizeof(uint64_t) - 1) & ~(sizeof(uint64_t) - 1))",
+      "since": "v7.31"
+    },
+    "FUSE_DIRENT_SIZE(d)": {
+      "value": "FUSE_DIRENT_ALIGN(FUSE_NAME_OFFSET + (d)->namelen)",
+      "since": "v7.31"
+    },
+    "FUSE_NAME_OFFSET_DIRENTPLUS": {
+      "value": "offsetof(struct fuse_direntplus, dirent.name)",
+      "since": "v7.31"
+    },
+    "FUSE_DIRENTPLUS_SIZE(d)": {
+      "value": "FUSE_DIRENT_ALIGN(FUSE_NAME_OFFSET_DIRENTPLUS + (d)->dirent.namelen)",
+      "since": "v7.31"
+    }
+  },
+  "fuse_opcode": {
+    "FUSE_LOOKUP": {
+      "value": 1,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_FORGET": {
+      "value": 2,
+      "comment": "no reply",
+      "since": "v7.31"
+    },
+    "FUSE_GETATTR": {
+      "value": 3,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_SETATTR": {
+      "value": 4,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_READLINK": {
+      "value": 5,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_SYMLINK": {
+      "value": 6,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_MKNOD": {
+      "value": 8,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_MKDIR": {
+      "value": 9,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_UNLINK": {
+      "value": 10,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_RMDIR": {
+      "value": 11,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_RENAME": {
+      "value": 12,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_LINK": {
+      "value": 13,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_OPEN": {
+      "value": 14,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_READ": {
+      "value": 15,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_WRITE": {
+      "value": 16,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_STATFS": {
+      "value": 17,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_RELEASE": {
+      "value": 18,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_FSYNC": {
+      "value": 20,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_SETXATTR": {
+      "value": 21,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_GETXATTR": {
+      "value": 22,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_LISTXATTR": {
+      "value": 23,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_REMOVEXATTR": {
+      "value": 24,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_FLUSH": {
+      "value": 25,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_INIT": {
+      "value": 26,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_OPENDIR": {
+      "value": 27,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_READDIR": {
+      "value": 28,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_RELEASEDIR": {
+      "value": 29,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_FSYNCDIR": {
+      "value": 30,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_GETLK": {
+      "value": 31,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_SETLK": {
+      "value": 32,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_SETLKW": {
+      "value": 33,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_ACCESS": {
+      "value": 34,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_CREATE": {
+      "value": 35,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_INTERRUPT": {
+      "value": 36,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_BMAP": {
+      "value": 37,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_DESTROY": {
+      "value": 38,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_IOCTL": {
+      "value": 39,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_POLL": {
+      "value": 40,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_NOTIFY_REPLY": {
+      "value": 41,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_BATCH_FORGET": {
+      "value": 42,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_FALLOCATE": {
+      "value": 43,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_READDIRPLUS": {
+      "value": 44,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_RENAME2": {
+      "value": 45,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_LSEEK": {
+      "value": 46,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_COPY_FILE_RANGE": {
+      "value": 47,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "CUSE_INIT": {
+      "value": 4096,
+      "comment": "",
+      "since": "v7.31"
+    }
+  },
+  "fuse_notify_code": {
+    "FUSE_NOTIFY_POLL": {
+      "value": 1,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_NOTIFY_INVAL_INODE": {
+      "value": 2,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_NOTIFY_INVAL_ENTRY": {
+      "value": 3,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_NOTIFY_STORE": {
+      "value": 4,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_NOTIFY_RETRIEVE": {
+      "value": 5,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_NOTIFY_DELETE": {
+      "value": 6,
+      "comment": "",
+      "since": "v7.31"
+    },
+    "FUSE_NOTIFY_CODE_MAX": {
+      "value": -1,
+      "comment": "",
+      "since": "v7.31"
+    }
+  }
+}
