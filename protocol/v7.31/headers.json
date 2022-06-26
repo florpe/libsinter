@@ -1,0 +1,72 @@
+{
+  "in": {
+    "len": {
+      "size": 32,
+      "offset": 0,
+      "signed": false,
+      "padding": false
+    },
+    "opcode": {
+      "size": 32,
+      "offset": 32,
+      "signed": false,
+      "padding": false
+    },
+    "unique": {
+      "size": 64,
+      "offset": 64,
+      "signed": false,
+      "padding": false
+    },
+    "nodeid": {
+      "size": 64,
+      "offset": 128,
+      "signed": false,
+      "padding": false
+    },
+    "uid": {
+      "size": 32,
+      "offset": 160,
+      "signed": false,
+      "padding": false
+    },
+    "gid": {
+      "size": 32,
+      "offset": 192,
+      "signed": false,
+      "padding": false
+    },
+    "pid": {
+      "size": 32,
+      "offset": 224,
+      "signed": false,
+      "padding": false
+    },
+    "padding": {
+      "size": 32,
+      "offset": 256,
+      "signed": false,
+      "padding": true
+    }
+  },
+  "out": {
+    "len": {
+      "size": 32,
+      "offset": 0,
+      "signed": false,
+      "padding": false
+    },
+    "error": {
+      "size": 32,
+      "offset": 32,
+      "signed": true,
+      "padding": false
+    },
+    "unique": {
+      "size": 64,
+      "offset": 64,
+      "signed": false,
+      "padding": false
+    }
+  }
+}
