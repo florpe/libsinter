@@ -1,0 +1,164 @@
+{
+  "attr": {
+    "size": 704,
+    "fields": {
+      "ino": {
+        "size": 64,
+        "offset": 0
+      },
+      "size": {
+        "size": 64,
+        "offset": 64
+      },
+      "blocks": {
+        "size": 64,
+        "offset": 128
+      },
+      "timeandmode": {
+        "size": 320,
+        "offset": 192,
+        "struct": "timeandmode"
+      },
+      "nlink": {
+        "size": 32,
+        "offset": 512
+      },
+      "uid": {
+        "size": 32,
+        "offset": 544
+      },
+      "gid": {
+        "size": 32,
+        "offset": 576
+      },
+      "rdev": {
+        "size": 32,
+        "offset": 608
+      },
+      "blksize": {
+        "size": 32,
+        "offset": 640
+      },
+      "padding": {
+        "size": 32,
+        "offset": 672,
+        "padding": true
+      }
+    }
+  },
+  "entry": {
+    "size": 1024,
+    "fields": {
+      "nodeId": {
+        "size": 64,
+        "offset": 0
+      },
+      "generation": {
+        "size": 64,
+        "offset": 64
+      },
+      "entryValid": {
+        "size": 64,
+        "offset": 128
+      },
+      "attrValid": {
+        "size": 64,
+        "offset": 192
+      },
+      "entryValidNsec": {
+        "size": 32,
+        "offset": 256
+      },
+      "attrValidNsec": {
+        "size": 32,
+        "offset": 288
+      },
+      "attr": {
+        "size": 704,
+        "offset": 320,
+        "struct": "attr"
+      }
+    }
+  },
+  "timeandmode": {
+    "size": 0,
+    "fields": {
+      "atime": {
+        "size": 64,
+        "offset": 0
+      },
+      "mtime": {
+        "size": 64,
+        "offset": 64
+      },
+      "ctime": {
+        "size": 64,
+        "offset": 128
+      },
+      "atimensec": {
+        "size": 32,
+        "offset": 192
+      },
+      "mtimensec": {
+        "size": 32,
+        "offset": 224
+      },
+      "ctimensec": {
+        "size": 32,
+        "offset": 256
+      },
+      "mode": {
+        "size": 32,
+        "offset": 288
+      }
+    }
+  },
+  "lock": {
+    "size": 192,
+    "fields": {
+      "start": {
+        "size": 64,
+        "offset": 0
+      },
+      "end": {
+        "size": 64,
+        "offset": 64
+      },
+      "type": {
+        "size": 32,
+        "offset": 128
+      },
+      "pid": {
+        "size": 32,
+        "offset": 160
+      }
+    }
+  },
+  "file_lock": {
+    "size": 384,
+    "fields": {
+      "fh": {
+        "size": 64,
+        "offset": 0
+      },
+      "owner": {
+        "size": 64,
+        "offset": 64
+      },
+      "lk": {
+        "size": 192,
+        "offset": 128,
+        "struct": "lock"
+      },
+      "lkFlags": {
+        "size": 32,
+        "offset": 320
+      },
+      "padding": {
+        "size": 32,
+        "offset": 352,
+        "padding": true
+      }
+    }
+  }
+}

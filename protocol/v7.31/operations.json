@@ -1,32 +1,10 @@
 {
   "FUSE_LOOKUP": {
     "request": {
-        "name": {"size": null, "offset": 0, "cstringposition": 0}
+        "name": {"size": null, "offset": 0, "cstringposition": 0, "TODO": "Check whether trailing zero is necessarily present"}
         },
     "response": {
-        "nodeId": {"size": 64, "offset": 0},
-        "generation": {"size": 64, "offset": 64},
-        "entryValid": {"size": 64, "offset": 128},
-        "attrValid": {"size": 64, "offset": 192},
-        "entryValidNsec": {"size": 32, "offset": 224},
-        "attrValidNsec": {"size": 32, "offset": 256},
-
-        "requesto": {"size": 64, "offset": 320},
-        "size": {"size": 64, "offset": 384},
-        "blocks": {"size": 64, "offset": 448},
-        "atime": {"size": 64, "offset": 512},
-        "mtime": {"size": 64, "offset": 576},
-        "ctime": {"size": 64, "offset": 640},
-        "atimensec": {"size": 32, "offset": 672},
-        "mtimensec": {"size": 32, "offset": 704},
-        "ctimensec": {"size": 32, "offset": 736},
-        "mode": {"size": 32, "offset": 768},
-        "nlink": {"size": 32, "offset": 800},
-        "uid": {"size": 32, "offset": 832},
-        "gid": {"size": 32, "offset": 864},
-        "rdev": {"size": 32, "offset": 896},
-        "blksize": {"size": 32, "offset": 928},
-        "padding": {"size": 32, "offset": 960, "padding": true}
+        "entry": {"size": 1024, "offset": 0, "struct": "entry"}
         }
   },
   "FUSE_FORGET": {
@@ -45,23 +23,7 @@
         "attrValid": {"size": 64, "offset": 0},
         "attrValidNsec": {"size": 32, "offset": 64},
         "dummy": {"size": 32, "offset": 96, "padding": true},
-
-        "requesto": {"size": 64, "offset": 128},
-        "size": {"size": 64, "offset": 192},
-        "blocks": {"size": 64, "offset": 256},
-        "atime": {"size": 64, "offset": 320},
-        "mtime": {"size": 64, "offset": 384},
-        "ctime": {"size": 64, "offset": 448},
-        "atimensec": {"size": 32, "offset": 512},
-        "mtimensec": {"size": 32, "offset": 544},
-        "ctimensec": {"size": 32, "offset": 576},
-        "mode": {"size": 32, "offset": 608},
-        "nlink": {"size": 32, "offset": 640},
-        "uid": {"size": 32, "offset": 672},
-        "gid": {"size": 32, "offset": 704},
-        "rdev": {"size": 32, "offset": 736},
-        "blksize": {"size": 32, "offset": 768},
-        "padding": {"size": 32, "offset": 800, "padding": true}
+        "attr": {"size": 704, "offset": 128, "struct": "attr"}
         }
   },
   "FUSE_SETATTR": {
@@ -71,73 +33,31 @@
         "fh": {"size": 64, "offset": 64},
         "size": {"size": 64, "offset": 128},
         "lockOwner": {"size": 64, "offset": 192},
-        "atime": {"size": 64, "offset": 256},
-        "mtime": {"size": 64, "offset": 320},
-        "ctime": {"size": 64, "offset": 384},
-        "atimensec": {"size": 32, "offset": 416},
-        "mtimensec": {"size": 32, "offset": 448},
-        "ctimensec": {"size": 32, "offset": 480},
-        "mode": {"size": 32, "offset": 512},
-        "unused4": {"size": 32, "offset": 544, "padding": true},
-        "uid": {"size": 32, "offset": 576},
-        "gid": {"size": 32, "offset": 608},
-        "unused5": {"size": 32, "offset": 640, "padding": true}
+        "timeandmode": {"size": 320, "offset": 256, "struct": "timeandmode"},
+        "unused4": {"size": 32, "offset": 576, "padding": true},
+        "uid": {"size": 32, "offset": 608},
+        "gid": {"size": 32, "offset": 640},
+        "unused5": {"size": 32, "offset": 672, "padding": true}
         },
     "response": {
         "attrValid": {"size": 64, "offset": 0},
         "attrValidNsec": {"size": 32, "offset": 64},
         "dummy": {"size": 32, "offset": 96, "padding": true},
-        "requesto": {"size": 64, "offset": 128},
-        "size": {"size": 64, "offset": 192},
-        "blocks": {"size": 64, "offset": 256},
-        "atime": {"size": 64, "offset": 320},
-        "mtime": {"size": 64, "offset": 384},
-        "ctime": {"size": 64, "offset": 448},
-        "atimensec": {"size": 32, "offset": 512},
-        "mtimensec": {"size": 32, "offset": 544},
-        "ctimensec": {"size": 32, "offset": 576},
-        "mode": {"size": 32, "offset": 608},
-        "nlink": {"size": 32, "offset": 640},
-        "uid": {"size": 32, "offset": 672},
-        "gid": {"size": 32, "offset": 704},
-        "rdev": {"size": 32, "offset": 736},
-        "blksize": {"size": 32, "offset": 768},
-        "padding": {"size": 32, "offset": 800, "padding": true}
+        "attr": {"size": 704, "offset": 128, "struct": "attr"}
         }
   },
   "FUSE_READLINK": {
     "request": {},
     "response": {
-        "path": {"size": null, "offset": 0}
+        "path": {"size": null, "offset": 0, "TODO": "Check whether trailing zero is necessary"}
         }
   },
   "FUSE_SYMLINK": {
     "request": {
-        "path": {"size": null, "offset": 0}
+        "path": {"size": null, "offset": 0, "TODO": "Check whether trailing zero is necessary"}
         },
     "response": {
-        "nodeId": {"size": 64, "offset": 0},
-        "generation": {"size": 64, "offset": 64},
-        "entryValid": {"size": 64, "offset": 128},
-        "attrValid": {"size": 64, "offset": 192},
-        "entryValidNsec": {"size": 32, "offset": 224},
-        "attrValidNsec": {"size": 32, "offset": 256},
-        "requesto": {"size": 64, "offset": 320},
-        "size": {"size": 64, "offset": 384},
-        "blocks": {"size": 64, "offset": 448},
-        "atime": {"size": 64, "offset": 512},
-        "mtime": {"size": 64, "offset": 576},
-        "ctime": {"size": 64, "offset": 640},
-        "atimensec": {"size": 32, "offset": 672},
-        "mtimensec": {"size": 32, "offset": 704},
-        "ctimensec": {"size": 32, "offset": 736},
-        "mode": {"size": 32, "offset": 768},
-        "nlink": {"size": 32, "offset": 800},
-        "uid": {"size": 32, "offset": 832},
-        "gid": {"size": 32, "offset": 864},
-        "rdev": {"size": 32, "offset": 896},
-        "blksize": {"size": 32, "offset": 928},
-        "padding": {"size": 32, "offset": 960, "padding": true}
+        "entry": {"size": 1024, "offset": 0, "struct": "entry"}
         }
   },
   "FUSE_MKNOD": {
@@ -149,28 +69,7 @@
         "path": {"size": null, "offset": 128}
         },
     "response": {
-        "nodeId": {"size": 64, "offset": 0},
-        "generation": {"size": 64, "offset": 64},
-        "entryValid": {"size": 64, "offset": 128},
-        "attrValid": {"size": 64, "offset": 192},
-        "entryValidNsec": {"size": 32, "offset": 224},
-        "attrValidNsec": {"size": 32, "offset": 256},
-        "requesto": {"size": 64, "offset": 320},
-        "size": {"size": 64, "offset": 384},
-        "blocks": {"size": 64, "offset": 448},
-        "atime": {"size": 64, "offset": 512},
-        "mtime": {"size": 64, "offset": 576},
-        "ctime": {"size": 64, "offset": 640},
-        "atimensec": {"size": 32, "offset": 672},
-        "mtimensec": {"size": 32, "offset": 704},
-        "ctimensec": {"size": 32, "offset": 736},
-        "mode": {"size": 32, "offset": 768},
-        "nlink": {"size": 32, "offset": 800},
-        "uid": {"size": 32, "offset": 832},
-        "gid": {"size": 32, "offset": 864},
-        "rdev": {"size": 32, "offset": 896},
-        "blksize": {"size": 32, "offset": 928},
-        "padding": {"size": 32, "offset": 960, "padding": true}
+        "entry": {"size": 1024, "offset": 0, "struct": "entry"}
         }
   },
   "FUSE_MKDIR": {
@@ -180,28 +79,7 @@
         "path": {"size": null, "offset": 64}
         },
     "response": {
-        "nodeId": {"size": 64, "offset": 0},
-        "generation": {"size": 64, "offset": 64},
-        "entryValid": {"size": 64, "offset": 128},
-        "attrValid": {"size": 64, "offset": 192},
-        "entryValidNsec": {"size": 32, "offset": 224},
-        "attrValidNsec": {"size": 32, "offset": 256},
-        "requesto": {"size": 64, "offset": 320},
-        "size": {"size": 64, "offset": 384},
-        "blocks": {"size": 64, "offset": 448},
-        "atime": {"size": 64, "offset": 512},
-        "mtime": {"size": 64, "offset": 576},
-        "ctime": {"size": 64, "offset": 640},
-        "atimensec": {"size": 32, "offset": 672},
-        "mtimensec": {"size": 32, "offset": 704},
-        "ctimensec": {"size": 32, "offset": 736},
-        "mode": {"size": 32, "offset": 768},
-        "nlink": {"size": 32, "offset": 800},
-        "uid": {"size": 32, "offset": 832},
-        "gid": {"size": 32, "offset": 864},
-        "rdev": {"size": 32, "offset": 896},
-        "blksize": {"size": 32, "offset": 928},
-        "padding": {"size": 32, "offset": 960, "padding": true}
+        "entry": {"size": 1024, "offset": 0, "struct": "entry"}
         }
   },
   "FUSE_UNLINK": {
@@ -219,39 +97,18 @@
   "FUSE_RENAME": {
     "request": {
         "newdir": {"size": 64, "offset": 0},
-        "nameOld": {"size": null, "offset": 64, "cstringposition": 0},
-        "nameNew": {"size": null, "offset": null, "cstringposition": 1}
+        "nameOld": {"size": null, "offset": 64, "cstringposition": 0, "TODO": "Check whether trailing zero is necessarily present"},
+        "nameNew": {"size": null, "offset": null, "cstringposition": 1, "TODO": "Check whether trailing zero is necessarily present"}
         },
     "response": {}
   },
   "FUSE_LINK": {
     "request": {
         "oldnodeid": {"size": 64, "offset": 0},
-        "path": {"size": null, "offset": 64}
+        "path": {"size": null, "offset": 64, "TODO": "Check whether trailing zero is necessarily present"}
         },
     "response": {
-        "nodeId": {"size": 64, "offset": 0},
-        "generation": {"size": 64, "offset": 64},
-        "entryValid": {"size": 64, "offset": 128},
-        "attrValid": {"size": 64, "offset": 192},
-        "entryValidNsec": {"size": 32, "offset": 224},
-        "attrValidNsec": {"size": 32, "offset": 256},
-        "requesto": {"size": 64, "offset": 320},
-        "size": {"size": 64, "offset": 384},
-        "blocks": {"size": 64, "offset": 448},
-        "atime": {"size": 64, "offset": 512},
-        "mtime": {"size": 64, "offset": 576},
-        "ctime": {"size": 64, "offset": 640},
-        "atimensec": {"size": 32, "offset": 672},
-        "mtimensec": {"size": 32, "offset": 704},
-        "ctimensec": {"size": 32, "offset": 736},
-        "mode": {"size": 32, "offset": 768},
-        "nlink": {"size": 32, "offset": 800},
-        "uid": {"size": 32, "offset": 832},
-        "gid": {"size": 32, "offset": 864},
-        "rdev": {"size": 32, "offset": 896},
-        "blksize": {"size": 32, "offset": 928},
-        "padding": {"size": 32, "offset": 960, "padding": true}
+        "entry": {"size": 1024, "offset": 0, "struct": "entry"}
         }
   },
   "FUSE_OPEN": {
@@ -262,7 +119,7 @@
     "response": {
         "fh": {"size": 64, "offset": 0},
         "openFlags": {"size": 32, "offset": 64},
-        "padding": {"size": 32, "offset": 92, "padding": true}
+        "padding": {"size": 32, "offset": 96, "padding": true}
         }
   },
   "FUSE_READ": {
@@ -300,11 +157,11 @@
         "bavail": {"size": 64, "offset": 128},
         "files": {"size": 64, "offset": 192},
         "ffree": {"size": 64, "offset": 256},
-        "bsize": {"size": 32, "offset": 288},
-        "nameLen": {"size": 32, "offset": 320},
-        "frsize": {"size": 32, "offset": 352},
-        "padding": {"size": 32, "offset": 384, "padding": true},
-        "spare": {"size": 192, "offset": 416, "padding": true}
+        "bsize": {"size": 32, "offset": 320},
+        "nameLen": {"size": 32, "offset": 352},
+        "frsize": {"size": 32, "offset": 384},
+        "padding": {"size": 32, "offset": 416, "padding": true},
+        "spare": {"size": 192, "offset": 448, "padding": true}
         }
   },
   "FUSE_RELEASE": {
@@ -337,7 +194,7 @@
     "request": {
         "size": {"size": 32, "offset": 0},
         "padding": {"size": 32, "offset": 32, "padding": true},
-        "name": {"size": null, "offset": 64, "cstringposition": 0}
+        "name": {"size": null, "offset": 64, "cstringposition": 0, "TODO": "Check whether trailing zero is necessarily present"}
         },
     "response": {
         "size": {"size": 32, "offset": 0},
@@ -351,12 +208,12 @@
         "flags": {"size": 32, "offset": 32}
         },
     "response": {
-        "data": {"size": null, "offset": 0}
+        "data": {"size": null, "offset": 0, "TODO": "Think of a way to specify the format here"}
         }
   },
   "FUSE_REMOVEXATTR": {
     "request": {
-        "name": {"size": null, "offset": 0}
+        "name": {"size": null, "offset": 0, "cstringposition": 0, "TODO": "Check whether trailing zero is necessarily present"}
         },
     "response": {}
   },
@@ -398,7 +255,7 @@
     "response": {
         "fh": {"size": 64, "offset": 0},
         "openFlags": {"size": 32, "offset": 64},
-        "padding": {"size": 32, "offset": 92, "padding": true}
+        "padding": {"size": 32, "offset": 96, "padding": true}
         }
   },
   "FUSE_READDIR": {
@@ -431,68 +288,26 @@
   },
   "FUSE_GETLK": {
     "request": {
-        "fh": {"size": 64, "offset": 0},
-        "owner": {"size": 64, "offset": 64},
-        "start": {"size": 64, "offset": 128},
-        "end": {"size": 64, "offset": 192},
-        "typ": {"size": 32, "offset": 256},
-        "pid": {"size": 32, "offset": 288},
-        "lkFlags": {"size": 32, "offset": 320},
-        "padding": {"size": 32, "offset": 352, "padding": true}
+        "lk": {"size": 384, "offset": 0, "struct": "file_lock"}
         },
     "response": {
-        "fh": {"size": 64, "offset": 0},
-        "owner": {"size": 64, "offset": 64},
-        "start": {"size": 64, "offset": 128},
-        "end": {"size": 64, "offset": 192},
-        "typ": {"size": 32, "offset": 256},
-        "pid": {"size": 32, "offset": 288},
-        "lkFlags": {"size": 32, "offset": 320},
-        "padding": {"size": 32, "offset": 352, "padding": true}
+        "lk": {"size": 384, "offset": 0, "struct": "file_lock"}
         }
   },
   "FUSE_SETLK": {
     "request": {
-        "fh": {"size": 64, "offset": 0},
-        "owner": {"size": 64, "offset": 64},
-        "start": {"size": 64, "offset": 128},
-        "end": {"size": 64, "offset": 192},
-        "typ": {"size": 32, "offset": 256},
-        "pid": {"size": 32, "offset": 288},
-        "lkFlags": {"size": 32, "offset": 320},
-        "padding": {"size": 32, "offset": 352, "padding": true}
+        "lk": {"size": 384, "offset": 0, "struct": "file_lock"}
         },
     "response": {
-        "fh": {"size": 64, "offset": 0},
-        "owner": {"size": 64, "offset": 64},
-        "start": {"size": 64, "offset": 128},
-        "end": {"size": 64, "offset": 192},
-        "typ": {"size": 32, "offset": 256},
-        "pid": {"size": 32, "offset": 288},
-        "lkFlags": {"size": 32, "offset": 320},
-        "padding": {"size": 32, "offset": 352, "padding": true}
+        "lk": {"size": 384, "offset": 0, "struct": "file_lock"}
         }
   },
   "FUSE_SETLKW": {
     "request": {
-        "fh": {"size": 64, "offset": 0},
-        "owner": {"size": 64, "offset": 64},
-        "start": {"size": 64, "offset": 128},
-        "end": {"size": 64, "offset": 192},
-        "typ": {"size": 32, "offset": 256},
-        "pid": {"size": 32, "offset": 288},
-        "lkFlags": {"size": 32, "offset": 320},
-        "padding": {"size": 32, "offset": 352, "padding": true}
+        "lk": {"size": 384, "offset": 0, "struct": "file_lock"}
         },
     "response": {
-        "fh": {"size": 64, "offset": 0},
-        "owner": {"size": 64, "offset": 64},
-        "start": {"size": 64, "offset": 128},
-        "end": {"size": 64, "offset": 192},
-        "typ": {"size": 32, "offset": 256},
-        "pid": {"size": 32, "offset": 288},
-        "lkFlags": {"size": 32, "offset": 320},
-        "padding": {"size": 32, "offset": 352, "padding": true}
+        "lk": {"size": 384, "offset": 0, "struct": "file_lock"}
         }
   },
   "FUSE_ACCESS": {
@@ -510,31 +325,10 @@
         "padding": {"size": 32, "offset": 96, "padding": true}
         },
     "response": {
-        "nodeId": {"size": 64, "offset": 0},
-        "generation": {"size": 64, "offset": 64},
-        "entryValid": {"size": 64, "offset": 128},
-        "attrValid": {"size": 64, "offset": 192},
-        "entryValidNsec": {"size": 32, "offset": 224},
-        "attrValidNsec": {"size": 32, "offset": 256},
-        "requesto": {"size": 64, "offset": 320},
-        "size": {"size": 64, "offset": 384},
-        "blocks": {"size": 64, "offset": 448},
-        "atime": {"size": 64, "offset": 512},
-        "mtime": {"size": 64, "offset": 576},
-        "ctime": {"size": 64, "offset": 640},
-        "atimensec": {"size": 32, "offset": 672},
-        "mtimensec": {"size": 32, "offset": 704},
-        "ctimensec": {"size": 32, "offset": 736},
-        "mode": {"size": 32, "offset": 768},
-        "nlink": {"size": 32, "offset": 800},
-        "uid": {"size": 32, "offset": 832},
-        "gid": {"size": 32, "offset": 864},
-        "rdev": {"size": 32, "offset": 896},
-        "blksize": {"size": 32, "offset": 928},
-        "padding": {"size": 32, "offset": 960, "padding": true},
+        "entry": {"size": 1024, "offset": 0, "struct": "entry"},
         "fh": {"size": 64, "offset": 1024},
-        "openFlags": {"size": 32, "offset": 1056},
-        "padding": {"size": 32, "offset": 1088, "padding": true}
+        "openFlags": {"size": 32, "offset": 1088},
+        "padding": {"size": 32, "offset": 1120, "padding": true}
         }
   },
   "FUSE_INTERRUPT": {
@@ -578,7 +372,7 @@
         "fh": {"size": 64, "offset": 0},
         "kh": {"size": 64, "offset": 64},
         "flags": {"size": 32, "offset": 128},
-        "padding": {"size": 32, "offset": 140, "padding": true}
+        "padding": {"size": 32, "offset": 160, "padding": true}
         },
     "response": {
         "revents": {"size": 32, "offset": 0},
@@ -593,7 +387,7 @@
     "request": {
         "count": {"size": 32, "offset": 0},
         "dummy": {"size": 32, "offset": 32},
-        "data": {"size": null, "offset": 0}
+        "data": {"size": null, "offset": 64}
         },
     "response": {}
   },
@@ -623,8 +417,8 @@
         "newdir": {"size": 64, "offset": 0},
         "flags": {"size": 32, "offset": 64},
         "padding": {"size": 32, "offset": 96, "padding": true},
-        "nameOld": {"size": null, "offset": 128, "cstringposition": 0},
-        "nameNew": {"size": null, "offset": 128, "cstringposition": 1}
+        "nameOld": {"size": null, "offset": 128, "cstringposition": 0, "TODO": "Check whether trailing zero is necessarily present"},
+        "nameNew": {"size": null, "offset": 128, "cstringposition": 1, "TODO": "Check whether trailing zero is necessarily present"}
         },
     "response": {}
   },
@@ -642,12 +436,12 @@
   "FUSE_COPY_FILE_RANGE": {
     "request": {
         "fhIn": {"size": 64, "offset": 0},
-        "offIn": {"size": 64, "offset": 0},
-        "nodeIdOut": {"size": 64, "offset": 0},
-        "fhOut": {"size": 64, "offset": 0},
-        "offOut": {"size": 64, "offset": 0},
-        "len": {"size": 64, "offset": 0},
-        "flags": {"size": 64, "offset": 0}
+        "offIn": {"size": 64, "offset": 64},
+        "nodeIdOut": {"size": 64, "offset": 128},
+        "fhOut": {"size": 64, "offset": 192},
+        "offOut": {"size": 64, "offset": 256},
+        "len": {"size": 64, "offset": 320},
+        "flags": {"size": 64, "offset": 384}
         },
     "response": {
         "count": {"size": 64, "offset": 0}
