@@ -1,5 +1,6 @@
 {
   "attr": {
+    "structname": "attr",
     "size": 704,
     "fields": {
       "ino": {
@@ -47,6 +48,7 @@
     }
   },
   "entry": {
+    "structname": "entry",
     "size": 1024,
     "fields": {
       "nodeId": {
@@ -81,6 +83,7 @@
     }
   },
   "timeandmode": {
+    "structname": "timeandmode",
     "size": 0,
     "fields": {
       "atime": {
@@ -114,6 +117,7 @@
     }
   },
   "lock": {
+    "structname": "lock",
     "size": 192,
     "fields": {
       "start": {
@@ -135,6 +139,7 @@
     }
   },
   "file_lock": {
+    "structname": "file_lock",
     "size": 384,
     "fields": {
       "fh": {
@@ -160,5 +165,17 @@
         "padding": true
       }
     }
+  },
+  "dirent": {
+    "structname": "dirent",
+    "size": null
+    , "fields": {
+        "ino": {"size": 64, "offset": 0},
+        "cookie": {"size": 64, "offset": 64},
+        "namelen": {"size": 32, "offset": 128},
+        "type": {"size": 32, "offset": 160},
+        "name": {"size": null, "offset": 192, "cstringposition": 0}
+    }
+    , "pad_to": 64
   }
 }

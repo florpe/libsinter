@@ -127,7 +127,10 @@
         "fh": {"size": 64, "offset": 0},
         "offset": {"size": 64, "offset": 64, "padding": true},
         "size": {"size": 32, "offset": 128},
-        "padding": {"size": 32, "offset": 160, "padding": true}
+        "read_flags": {"size": 32, "offset": 160},
+        "lock_owner": {"size": 64, "offset": 192},
+        "flags": {"size": 32, "offset": 256},
+        "padding": {"size": 32, "offset": 288, "padding": true}
         },
     "response": {
         "data": {"size": null, "offset": 0}
@@ -231,7 +234,8 @@
         "major": {"size": 32, "offset": 0},
         "minor": {"size": 32, "offset": 32},
         "maxReadAhead": {"size": 32, "offset": 64},
-        "flags": {"size": 32, "offset": 96}
+        "flags": {"size": 64, "offset": 96},
+        "unused": {"size": 352, "offset": 160}
         },
     "response": {
         "major": {"size": 32, "offset": 0},
@@ -261,12 +265,15 @@
   "FUSE_READDIR": {
     "request": {
         "fh": {"size": 64, "offset": 0},
-        "offset": {"size": 64, "offset": 64},
+        "cookie": {"size": 64, "offset": 64},
         "size": {"size": 32, "offset": 128},
-        "padding": {"size": 32, "offset": 160, "padding": true}
+        "read_flags": {"size": 32, "offset": 160},
+        "lock_owner": {"size": 64, "offset": 192},
+        "flags": {"size": 32, "offset": 256},
+        "padding": {"size": 32, "offset": 288, "padding": true}
         },
     "response": {
-        "data": {"size": null, "offset": 0}
+        "data": {"size": null, "offset": 0, "struct": "dirent"}
         }
   },
   "FUSE_RELEASEDIR": {
@@ -404,12 +411,12 @@
   "FUSE_READDIRPLUS": {
     "request": {
         "fh": {"size": 64, "offset": 0},
-        "offset": {"size": 64, "offset": 64, "padding": true},
+        "cookie": {"size": 64, "offset": 64},
         "size": {"size": 32, "offset": 128},
         "padding": {"size": 32, "offset": 160, "padding": true}
         },
     "response": {
-        "data": {"size": null, "offset": 0}
+        "data": {"size": null, "offset": 0, "struct": "dirent", "multiple": true}
         }
   },
   "FUSE_RENAME2": {
