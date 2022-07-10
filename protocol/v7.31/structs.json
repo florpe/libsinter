@@ -157,7 +157,8 @@
       },
       "lkFlags": {
         "size": 32,
-        "offset": 320
+        "offset": 320,
+        "flags": "lock"
       },
       "padding": {
         "size": 32,

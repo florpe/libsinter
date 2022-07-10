@@ -15,7 +15,7 @@
   },
  "FUSE_GETATTR": {
     "request": {
-        "flags": {"size": 32, "offset": 0},
+        "flags": {"size": 32, "offset": 0, "flags": "getattr"},
         "dummy": {"size": 32, "offset": 32, "padding": true},
         "fh": {"size": 64, "offset": 64}
         },
@@ -28,7 +28,7 @@
   },
   "FUSE_SETATTR": {
     "request": {
-        "valid": {"size": 32, "offset": 0},
+        "valid": {"size": 32, "offset": 0, "flags": "setattr_valid"},
         "padding": {"size": 32, "offset": 32},
         "fh": {"size": 64, "offset": 64},
         "size": {"size": 64, "offset": 128},
@@ -118,7 +118,7 @@
         },
     "response": {
         "fh": {"size": 64, "offset": 0},
-        "openFlags": {"size": 32, "offset": 64},
+        "openFlags": {"size": 32, "offset": 64, "flags": "openFlags"},
         "padding": {"size": 32, "offset": 96, "padding": true}
         }
   },
@@ -127,7 +127,7 @@
         "fh": {"size": 64, "offset": 0},
         "offset": {"size": 64, "offset": 64, "padding": true},
         "size": {"size": 32, "offset": 128},
-        "read_flags": {"size": 32, "offset": 160},
+        "read_flags": {"size": 32, "offset": 160, "flags": "read", "TODO": "Check whether that is the right flags field"},
         "lock_owner": {"size": 64, "offset": 192},
         "flags": {"size": 32, "offset": 256},
         "padding": {"size": 32, "offset": 288, "padding": true}
@@ -141,7 +141,7 @@
         "fh": {"size": 64, "offset": 0},
         "offset": {"size": 64, "offset": 64},
         "size": {"size": 32, "offset": 128},
-        "writeFlags": {"size": 32, "offset": 160},
+        "writeFlags": {"size": 32, "offset": 160, "flags": "write"},
         "lockOwner": {"size": 64, "offset": 192},
         "flags": {"size": 32, "offset": 256},
         "padding": {"size": 32, "offset": 288, "padding": true},
@@ -179,7 +179,7 @@
   "FUSE_FSYNC": {
     "request": {
         "fh": {"size": 64, "offset": 0},
-        "fsyncFlags": {"size": 32, "offset": 64},
+        "fsyncFlags": {"size": 32, "offset": 64, "flags": "fsync"},
         "padding": {"size": 32, "offset": 96}
         },
     "response": {}
@@ -234,14 +234,14 @@
         "major": {"size": 32, "offset": 0},
         "minor": {"size": 32, "offset": 32},
         "maxReadAhead": {"size": 32, "offset": 64},
-        "flags": {"size": 64, "offset": 96},
+        "flags": {"size": 64, "offset": 96, "flags": "init"},
         "unused": {"size": 352, "offset": 160}
         },
     "response": {
         "major": {"size": 32, "offset": 0},
         "minor": {"size": 32, "offset": 32},
         "maxReadAhead": {"size": 32, "offset": 64},
-        "flags": {"size": 32, "offset": 96},
+        "flags": {"size": 32, "offset": 96, "flags": "init"},
         "maxBackground": {"size": 16, "offset": 128},
         "congestionThreshold": {"size": 16, "offset": 144},
         "maxWrite": {"size": 32, "offset": 160},
@@ -258,7 +258,7 @@
         },
     "response": {
         "fh": {"size": 64, "offset": 0},
-        "openFlags": {"size": 32, "offset": 64},
+        "openFlags": {"size": 32, "offset": 64, "flags": "openFlags"},
         "padding": {"size": 32, "offset": 96, "padding": true}
         }
   },
@@ -267,7 +267,7 @@
         "fh": {"size": 64, "offset": 0},
         "cookie": {"size": 64, "offset": 64},
         "size": {"size": 32, "offset": 128},
-        "read_flags": {"size": 32, "offset": 160},
+        "read_flags": {"size": 32, "offset": 160, "flags": "read", "TODO": "Check whether that is the right flags field"},
         "lock_owner": {"size": 64, "offset": 192},
         "flags": {"size": 32, "offset": 256},
         "padding": {"size": 32, "offset": 288, "padding": true}
@@ -279,7 +279,7 @@
   "FUSE_RELEASEDIR": {
     "request": {
         "fh": {"size": 64, "offset": 0},
-        "flags": {"size": 32, "offset": 64},
+        "flags": {"size": 32, "offset": 64, "flags": "release"},
         "releaseFlags": {"size": 32, "offset": 96},
         "lockOwner": {"size": 64, "offset": 128}
         },
@@ -334,7 +334,7 @@
     "response": {
         "entry": {"size": 1024, "offset": 0, "struct": "entry"},
         "fh": {"size": 64, "offset": 1024},
-        "openFlags": {"size": 32, "offset": 1088},
+        "openFlags": {"size": 32, "offset": 1088, "flags": "openFlags"},
         "padding": {"size": 32, "offset": 1120, "padding": true}
         }
   },
@@ -359,9 +359,10 @@
     "response": -1
   },
   "FUSE_IOCTL": {
+    "TODO": "Figure out whether the same flags apply in both directions",
     "request": {
         "fh": {"size": 64, "offset": 0},
-        "flags": {"size": 32, "offset": 64},
+        "flags": {"size": 32, "offset": 64, "flags": "ioctl"},
         "cmd": {"size": 32, "offset": 96},
         "arg": {"size": 64, "offset": 128},
         "requestSize": {"size": 32, "offset": 192},
@@ -369,7 +370,7 @@
         },
     "response": {
 	    "result": {"size": 32, "offset": 0, "signed": true},
-        "flags": {"size": 32, "offset": 32},
+        "flags": {"size": 32, "offset": 32, "flags": "ioctl"},
         "requestIovs": {"size": 32, "offset": 64},
         "responseIovs": {"size": 32, "offset": 96}
         }
@@ -378,7 +379,7 @@
     "request": {
         "fh": {"size": 64, "offset": 0},
         "kh": {"size": 64, "offset": 64},
-        "flags": {"size": 32, "offset": 128},
+        "flags": {"size": 32, "offset": 128, "flags": "poll"},
         "padding": {"size": 32, "offset": 160, "padding": true}
         },
     "response": {
@@ -413,7 +414,8 @@
         "fh": {"size": 64, "offset": 0},
         "cookie": {"size": 64, "offset": 64},
         "size": {"size": 32, "offset": 128},
-        "padding": {"size": 32, "offset": 160, "padding": true}
+        "padding": {"size": 32, "offset": 160, "padding": true},
+        "TODO": "This probably needs additional fields as in FUSE_READDIR"
         },
     "response": {
         "data": {"size": null, "offset": 0, "struct": "dirent", "zero_or_more": true}

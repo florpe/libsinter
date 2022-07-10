@@ -1,0 +1,91 @@
+{
+"setattr_valid": {
+    "FATTR_MODE": {"bitshift": 0},
+    "FATTR_UID": {"bitshift": 1},
+    "FATTR_GID": {"bitshift": 2},
+    "FATTR_SIZE": {"bitshift": 3},
+    "FATTR_ATIME": {"bitshift": 4},
+    "FATTR_MTIME": {"bitshift": 5},
+    "FATTR_FH": {"bitshift": 6},
+    "FATTR_ATIME_NOW": {"bitshift": 7},
+    "FATTR_MTIME_NOW": {"bitshift": 8},
+    "FATTR_LOCKOWNER": {"bitshift": 9},
+    "FATTR_CTIME": {"bitshift": 10}
+},
+"openFlags": {
+    "FOPEN_DIRECT_IO": {"bitshift": 0},
+    "FOPEN_KEEP_CACHE": {"bitshift": 1},
+    "FOPEN_NONSEEKABLE": {"bitshift": 2},
+    "FOPEN_CACHE_DIR": {"bitshift": 3},
+    "FOPEN_STREAM": {"bitshift": 4},
+    "FOPEN_NOFLUSH": {"bitshift": 5}
+},
+"init": {
+    "FUSE_ASYNC_READ": {"bitshift": 0},
+    "FUSE_POSIX_LOCKS": {"bitshift": 1},
+    "FUSE_FILE_OPS": {"bitshift": 2},
+    "FUSE_ATOMIC_O_TRUNC": {"bitshift": 3},
+    "FUSE_EXPORT_SUPPORT": {"bitshift": 4},
+    "FUSE_BIG_WRITES": {"bitshift": 5},
+    "FUSE_DONT_MASK": {"bitshift": 6},
+    "FUSE_SPLICE_WRITE": {"bitshift": 7},
+    "FUSE_SPLICE_MOVE": {"bitshift": 8},
+    "FUSE_SPLICE_READ": {"bitshift": 9},
+    "FUSE_FLOCK_LOCKS": {"bitshift": 10},
+    "FUSE_HAS_IOCTL_DIR": {"bitshift": 11},
+    "FUSE_AUTO_INVAL_DATA": {"bitshift": 12},
+    "FUSE_DO_READDIRPLUS": {"bitshift": 13},
+    "FUSE_READDIRPLUS_AUTO": {"bitshift": 14},
+    "FUSE_ASYNC_DIO": {"bitshift": 15},
+    "FUSE_WRITEBACK_CACHE": {"bitshift": 16},
+    "FUSE_NO_OPEN_SUPPORT": {"bitshift": 17},
+    "FUSE_PARALLEL_DIROPS": {"bitshift": 18},
+    "FUSE_HANDLE_KILLPRIV": {"bitshift": 19},
+    "FUSE_POSIX_ACL": {"bitshift": 20},
+    "FUSE_ABORT_ERROR": {"bitshift": 21},
+    "FUSE_MAX_PAGES": {"bitshift": 22},
+    "FUSE_CACHE_SYMLINKS": {"bitshift": 23},
+    "FUSE_NO_OPENDIR_SUPPORT": {"bitshift": 24},
+    "FUSE_EXPLICIT_INVAL_DATA": {"bitshift": 25},
+    "FUSE_MAP_ALIGNMENT": {"bitshift": 26},
+    "FUSE_SUBMOUNTS": {"bitshift": 27},
+    "FUSE_HANDLE_KILLPRIV_V2": {"bitshift": 28},
+    "FUSE_SETXATTR_EXT": {"bitshift": 29},
+    "FUSE_INIT_EXT": {"bitshift": 30},
+    "FUSE_INIT_RESERVED": {"bitshift": 31},
+    "FUSE_SECURITY_CTX": {"bitshift": 32},
+    "FUSE_HAS_INODE_DAX": {"bitshift": 33}
+},
+"release": {
+    "FUSE_RELEASE_FLUSH": {"bitshift": 0},
+    "FUSE_RELEASE_FLOCK_UNLOCK": {"bitshift": 1}
+},
+"getattr": {
+    "FUSE_GETATTR_FH": {"bitshift": 0}
+},
+"lock": {
+    "FUSE_LK_FLOCK": {"bitshift": 0}
+},
+"write": {
+    "FUSE_WRITE_CACHE": {"bitshift": 0},
+    "FUSE_WRITE_LOCKOWNER": {"bitshift": 1},
+    "FUSE_WRITE_KILL_PRIV": {"bitshift": 2}
+},
+"read": {
+    "FUSE_READ_LOCKOWNER": {"bitshift": 1}
+},
+"ioctl": {
+    "FUSE_IOCTL_COMPAT": {"bitshift": 0},
+    "FUSE_IOCTL_UNRESTRICTED": {"bitshift": 1},
+    "FUSE_IOCTL_RETRY": {"bitshift": 2},
+    "FUSE_IOCTL_32BIT": {"bitshift": 3},
+    "FUSE_IOCTL_DIR": {"bitshift": 4},
+    "FUSE_IOCTL_COMPAT_X32": {"bitshift": 5}
+},
+"poll": {
+    "FUSE_POLL_SCHEDULE_NOTIFY": {"bitshift": 0}
+},
+"fsync": {
+    "FUSE_FSYNC_FDATASYNC": {"bitshift": 0}
+}
+}
