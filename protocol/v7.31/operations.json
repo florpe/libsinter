@@ -273,7 +273,7 @@
         "padding": {"size": 32, "offset": 288, "padding": true}
         },
     "response": {
-        "data": {"size": null, "offset": 0, "struct": "dirent"}
+        "data": {"size": null, "offset": 0, "struct": "dirent", "zero_or_more": true}
         }
   },
   "FUSE_RELEASEDIR": {
@@ -416,7 +416,7 @@
         "padding": {"size": 32, "offset": 160, "padding": true}
         },
     "response": {
-        "data": {"size": null, "offset": 0, "struct": "dirent", "multiple": true}
+        "data": {"size": null, "offset": 0, "struct": "dirent", "zero_or_more": true}
         }
   },
   "FUSE_RENAME2": {
