@@ -414,12 +414,12 @@
         "fh": {"size": 64, "offset": 0},
         "cookie": {"size": 64, "offset": 64},
         "size": {"size": 32, "offset": 128},
-        "padding": {"size": 32, "offset": 160, "padding": true},
-        "TODO": "This probably needs additional fields as in FUSE_READDIR"
+        "padding": {"size": 32, "offset": 160, "padding": true}
         },
     "response": {
         "data": {"size": null, "offset": 0, "struct": "dirent", "zero_or_more": true}
-        }
+        },
+    "TODO": "This probably needs additional fields as in FUSE_READDIR"
   },
   "FUSE_RENAME2": {
     "request": {
