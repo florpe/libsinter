@@ -31,9 +31,9 @@ int main(int argc, char *argv[]) {
     if( argc == 1 || ( argc == 2 && is_help_flag(argv) == 0 ) ) {
         printf("Usage:\n");
         printf("    %s -m MOUNTPOINT MOUNTFLAGS FUSEOPTIONS MOUNTCOOKIE\n", argv[0]);
-        printf("        Create mount at MOUNTPOINT using MOUNTCOOKIE for identification using the file descriptor specified in FUSEOPTIONS.\n");
+        printf("        Create mount at MOUNTPOINT using MOUNTCOOKIE for identification. The fd=X option in FUSEOPTIONS is required.\n");
         printf("    %s -e MOUNTPOINT MOUNTFLAGS FUSEFLAGS MOUNTCOOKIE -- EXEC [ ARG ... ]\n", argv[0]);
-        printf("        Create mount at MOUNTPOINT, store the file descriptor in $FUSEFD, then execute EXEC [ ARG ... ] .\n");
+        printf("        Create mount at MOUNTPOINT, store the file descriptor in $FUSEFD, then execute CMD [ ARG ... ] . The fd=X option in FUSEOPTIONS must not be set.\n");
         printf("    %s -u MOUNTPOINT UMOUNTFLAGS MOUNTCOOKIE\n", argv[0]);
         printf("        Unmount the topmpost FUSE filesystem at MOUNTPOINT identified by MOUNTCOOKIE.\n");
         printf("    %s [ -h | --help ]\n", argv[0]);

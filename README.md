@@ -3,10 +3,11 @@
 A more opinionated, less encompassing alternative to libfuse. With capabilities!
 
 ## Modes
-
-    -m MOUNTPOINT FLAGS OPTIONS
-        Mounting mode. The fd=X option is required.
-    -e MOUNTPOINT FLAGS OPTIONS -- CMD [ CMD ... ]
-        Exec mode. Execute everything after -- with regular permissions. The fd=X options must not be set.
-    -u MOUNTPOINT FLAGS
-        Unmount mode.
+    -m MOUNTPOINT MOUNTFLAGS FUSEOPTIONS MOUNTCOOKIE
+        Create mount at MOUNTPOINT using MOUNTCOOKIE for identification. The fd=X option in FUSEOPTIONS is required.
+    -e MOUNTPOINT MOUNTFLAGS FUSEOPTIONS MOUNTCOOKIE -- CMD [ ARG ... ]
+        Create mount at MOUNTPOINT, store the file descriptor in $FUSEFD, then execute CMD [ ARG ... ] . The fd=X option in FUSEOPTIONS must not be set.
+    -u MOUNTPOINT UMOUNTFLAGS MOUNTCOOKIE
+        Unmount the topmpost FUSE filesystem at MOUNTPOINT identified by MOUNTCOOKIE.
+    -h, --help
+        Show this help.
