@@ -29,7 +29,15 @@ int main(int argc, char *argv[]) {
     char *mnt_abs;
 
     if( argc == 1 || ( argc == 2 && is_help_flag(argv) == 0 ) ) {
-        printf("Should print usage of %s here.", argv[0]);
+        printf("Usage:\n");
+        printf("    %s -m MOUNTPOINT MOUNTFLAGS FUSEOPTIONS MOUNTCOOKIE\n", argv[0]);
+        printf("        Create mount at MOUNTPOINT using MOUNTCOOKIE for identification using the file descriptor specified in FUSEOPTIONS.\n");
+        printf("    %s -e MOUNTPOINT MOUNTFLAGS FUSEFLAGS MOUNTCOOKIE -- EXEC [ ARG ... ]\n", argv[0]);
+        printf("        Create mount at MOUNTPOINT, store the file descriptor in $FUSEFD, then execute EXEC [ ARG ... ] .\n");
+        printf("    %s -u MOUNTPOINT UMOUNTFLAGS MOUNTCOOKIE\n", argv[0]);
+        printf("        Unmount the topmpost FUSE filesystem at MOUNTPOINT identified by MOUNTCOOKIE.\n");
+        printf("    %s [ -h | --help ]\n", argv[0]);
+        printf("        Show this help.\n");
         res = 0;
     }
     else if( strcmp(argv[1], "-m") == 0 ) {
