@@ -4,7 +4,7 @@
         "name": {"size": null, "offset": 0, "cstringposition": 0, "TODO": "Check whether trailing zero is necessarily present"}
         },
     "response": {
-        "entry": {"size": 1024, "offset": 0, "struct": "entry"}
+        "entry": {"size": 1024, "offset": 0, "struct": "entry", "zero_or_more": true}
         }
   },
   "FUSE_FORGET": {
@@ -84,7 +84,7 @@
   },
   "FUSE_UNLINK": {
     "request": {
-        "path": {"size": null, "offset": 0}
+        "name": {"size": null, "offset": 0, "cstringposition": 0}
         },
     "response": {}
   },
@@ -329,7 +329,8 @@
         "flags": {"size": 32, "offset": 0},
         "mode": {"size": 32, "offset": 32},
         "umask": {"size": 32, "offset": 64},
-        "padding": {"size": 32, "offset": 96, "padding": true}
+        "padding": {"size": 32, "offset": 96, "padding": true},
+        "name": {"size": null, "offset": 128, "cstringposition": 0}
         },
     "response": {
         "entry": {"size": 1024, "offset": 0, "struct": "entry"},

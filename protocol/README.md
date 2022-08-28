@@ -19,7 +19,7 @@ In the future an additional `structs.json` file might make the documentation mor
 Each entry in `operations.json` has the following fields:
 
 - `request` : Describes the fields of the RX struct.
-- `response` : Describes the fields of the TX struct. A null value means no reply message should be sent.
+- `response` : Describes the fields of the TX struct. A null value means no reply message should be sent. If a message is sent, FUSE will (somewhat confusingly) reply to the write operation with `ENOENT`.
 
 In the future additional keys might provide some commentary and flag information.
 
@@ -33,6 +33,7 @@ The structs used by FUSE are 64-bit aligned, and variable-sized fields are confi
 - `signed` : Whether the field represents a signed integer. Defaults to false.
 - `cstringposition` : Indicates that the field is a null-terminated string and indicates its position in the variable-sized fields section, with zero indicating the first null-terminated string. A variable-sized field without this key comes after any null-terminated strings and extends to the end of the message.
 - `struct` : Gives the name of a struct definition that applies to this field. Struct fields are guaranteed to only contain fixed-size fields.
+- `zero_or_more`: Indicates that this struct may repeat zero or more times. If the value is an integer, that is the upper limit of repetitions; if the value is `true`, no limit is imposed.
 
 The order of the fields is given by `(field["offset"], field.get("cstringposition", MAX\_INT))`. An empty description indicates that the reply should consist only of the mandatory header. A value of `-1` indicates missing information.
 
