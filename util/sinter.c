@@ -8,6 +8,7 @@
 
 #include "lib/mount.h"
 
+#define FUSEFDVAR "FUSEFD"
 
 
 
@@ -22,17 +23,22 @@ int is_help_flag (char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
+    //TODO: Move check_capabilities() here
     int uid = getuid();
 
     int res;
     int flags = 0;
     char *mnt_abs;
 
+    if( check_capabilities() == -1 ) {
+        fprintf(stderr, "Bad cababilities: Error %i\n", errno);
+        return -1;
+    }
     if( argc == 1 || ( argc == 2 && is_help_flag(argv) == 0 ) ) {
         printf("Usage:\n");
         printf("    %s -m MOUNTPOINT MOUNTFLAGS FUSEOPTIONS MOUNTCOOKIE\n", argv[0]);
         printf("        Create mount at MOUNTPOINT using MOUNTCOOKIE for identification. The fd=X option in FUSEOPTIONS is required.\n");
-        printf("    %s -e MOUNTPOINT MOUNTFLAGS FUSEFLAGS MOUNTCOOKIE -- EXEC [ ARG ... ]\n", argv[0]);
+        printf("    %s -e MOUNTPOINT MOUNTFLAGS FUSEOPTIONS MOUNTCOOKIE -- EXEC [ ARG ... ]\n", argv[0]);
         printf("        Create mount at MOUNTPOINT, store the file descriptor in $FUSEFD, then execute CMD [ ARG ... ] . The fd=X option in FUSEOPTIONS must not be set.\n");
         printf("    %s -u MOUNTPOINT UMOUNTFLAGS MOUNTCOOKIE\n", argv[0]);
         printf("        Unmount the topmpost FUSE filesystem at MOUNTPOINT identified by MOUNTCOOKIE.\n");
@@ -54,7 +60,14 @@ int main(int argc, char *argv[]) {
             return EINVAL;
         }
         flags = parse_mountflags(argv[3]);
-        res = do_exec(argv[2], argv[4], flags, argv[5], argv + 7);
+        res = do_exec(argv[2], argv[4], flags, FUSEFDVAR, argv[5], argv + 7);
+    }
+    else if( strcmp(argv[1], "-f") == 0 ) {
+        if( argc < 3 ) {
+            fprintf(stderr, "Bad arguments for file-based operation.\n");
+            return EINVAL;
+        }
+        res = do_fromfile_exec(argc - 2, argv + 2);
     }
     else if( strcmp(argv[1], "-u") == 0 ) {
         if( argc != 4 ) {

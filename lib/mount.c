@@ -18,11 +18,11 @@
 #define FUSEDEVICE "/dev/fuse"
 #define PROCMOUNTS "/proc/mounts"
 
-#define FUSEFDVAR "FUSEFD"
-
 #define FUSEFSTYPE "fuse"
 #define FUSESOURCE_FMT_PREFIX "sinter-0x%.4X-"
 #define FUSESOURCE_FMT_ENTIRE "sinter-0x%.4X-%s"
+
+#define WHITESPACE " \n\t"
 
 char *make_source_entry(int uid, char *suffix) {
     /* Wrapper for creating the mnt_fsname entry in PROCMOUNTS. Returns
@@ -203,7 +203,7 @@ int check_mountpoint(char *mnt) {
         fprintf(stderr, "Mountpoint must have u+rwx permissions.\n");
         return -1;
     }
-    fprintf(stderr, "Mount point looks good.\n");
+    fprintf(stderr, "Mountpoint looks good.\n");
     return 0;
 }
 
@@ -315,7 +315,7 @@ int get_fusefd(char* options) {
         return -1;
     }
     errno = 0;
-    fd = strtol(fdstart, NULL, 10);
+    fd = strtol(fdstart, NULL, 10); //TODO: Get rid of the integer constant, maybe?
     return (errno != 0) ? -1 : fd;
 }
 
@@ -356,7 +356,7 @@ char *compose_mount_opts(char *options, int fd) {
     return outopts;
 }
 
-int do_mount(char *mnt, char* options, int flags, char *tag) {
+int do_mount(char *mnt, char* options, int flags, char *cookie) {
     /* Run a mount operation on the file descriptor given.
      */
 
@@ -365,10 +365,6 @@ int do_mount(char *mnt, char* options, int flags, char *tag) {
 
     int fd;
 
-    if( check_capabilities() == -1 ) {
-        fprintf(stderr, "Bad cababilities: Error %i\n", errno);
-        return -1;
-    }
     fd = get_fusefd(options);
     if( fd == -1 ) {
         fprintf(stderr, "Could not find or convert file descriptor in options\n");
@@ -382,13 +378,13 @@ int do_mount(char *mnt, char* options, int flags, char *tag) {
         return -1;
     }
 
-    fusesource = make_source_entry(getuid(), tag);
+    fusesource = make_source_entry(getuid(), cookie);
     if( fusesource == NULL ) {
         fprintf(stderr, "Could not create mount cookie: Error %i\n", errno);
         return -1;
     };
     if ( mount(fusesource, mnt, fusefstype, flags, options) == -1 ) {
-        fprintf(stderr, "Failed to mount: Error %i\n", errno);
+        fprintf(stderr, "Failed to mount: Error %i, %s, %s, %s, %i, %s\n", errno, fusesource, mnt, fusefstype, flags, options);
         free(fusesource);
         return -1;
     }
@@ -398,28 +394,23 @@ int do_mount(char *mnt, char* options, int flags, char *tag) {
     return 0;
 }
 
-int do_exec(char *mnt, char* options, int flags, char *tag, char *execv[]) {
+int do_exec(char *mnt, char* options, int flags, char *fusefdvar, char *cookie, char *execv[]) {
     /* Performs the following steps:
      *   * Open FUSEDEVICE
      *   * Add the file descriptor to the options
      *   * Perform a mount
-     *   * Store the file descriptor in the FUSEFDVAR variable
+     *   * Store the file descriptor in the fusefdvar variable
      *   * Execute the arguments after the -- marker.
      * TODO: Clean up resource management.
      */
 
     const char *fusefstype = FUSEFSTYPE;
     char *fusesource;
-    const char *fusefdvar = FUSEFDVAR;
     const char *fusedevice = FUSEDEVICE;
 
     int fd = get_fusefd(options);
     char *mntopts;
 
-    if( check_capabilities() == -1 ) {
-        fprintf(stderr, "Bad cababilities: Error %i\n", errno);
-        return -1;
-    }
     if ( fd != -1 ) {
         fprintf(stderr, "File descriptor found in exec mode options.\n");
         errno = EINVAL;
@@ -438,7 +429,7 @@ int do_exec(char *mnt, char* options, int flags, char *tag, char *execv[]) {
         return -1;
     }
 
-    fusesource = make_source_entry(getuid(), tag);
+    fusesource = make_source_entry(getuid(), cookie);
     if( fusesource == NULL ) {
         fprintf(stderr, "Could not create mount cookie: Error %i\n", errno);
 
@@ -448,7 +439,7 @@ int do_exec(char *mnt, char* options, int flags, char *tag, char *execv[]) {
     }
 
     if( mount(fusesource, mnt, fusefstype, flags, mntopts) == -1 ) {
-        fprintf(stderr, "Failed to mount: Error %i\n", errno);
+        fprintf(stderr, "Failed to mount: Error %i, %s, %s, %s, %i, %s\n", errno, fusesource, mnt, fusefstype, flags, options);
         free(fusesource);
 
         close(fd);
@@ -470,7 +461,7 @@ int do_exec(char *mnt, char* options, int flags, char *tag, char *execv[]) {
         free(mntopts);
         return -1;
     }
-    if( setenv(fusefdvar, mntopts, 1) == -1 ) {
+    if( fusefdvar != NULL && setenv(fusefdvar, mntopts, 1) == -1 ) {
         fprintf(
             stderr
             , "Failed to write fd %i to environment: Could not set %s\n"
@@ -484,6 +475,147 @@ int do_exec(char *mnt, char* options, int flags, char *tag, char *execv[]) {
 
     //No close(fd) here!
     free(mntopts);
-    execvp(execv[0], execv);
+    if( execv != NULL ) {
+        execvp(execv[0], execv);
+    }
+    return 0;
+}
+
+int do_fromfile (char *terminus, int argc, char *argv[]) {
+    /* Processes argv[] entries as files containing
+     * a mount spec, terminating when the entry is equal to
+     * terminus. If terminus is NULL, it processes all entries.
+     *
+     * Returns the number of arguments consumed.
+     */
+    int count = 0;
+    for( count = 0; count < argc; count++ ) {
+        if( terminus != NULL && strcmp(argv[count], terminus) == 0 ) {
+            break;
+        }
+        errno = do_singlefile(argv[count]);
+        if( errno != 0 ) {
+            return -1;
+        }
+    }
+    return count;
+}
+
+int do_fromfile_exec (int argc, char *argv[]) {
+    int count = 0;
+    count = do_fromfile("--", argc, argv);
+    if( count == -1 ) {
+        return -1;
+    }
+    if( count == argc ) {
+        return 0;
+    }
+    if( count + 1 == argc ) {
+        fprintf(stderr, "No command specified.\n");
+        errno = EINVAL;
+        return -1;
+    }
+    execvp(argv[count + 1], argv + count + 1);
     return -1; //To make the compiler happy
+}
+
+int do_singlefile (char *file) {
+    FILE *fp;
+    int res;
+    char *line = NULL;
+    size_t linelen = 0;
+    char *saveptr = NULL;
+
+    char *envvar;
+    char *mountpoint;
+    char *mountflags;
+    char *fuseopts;
+    char *cookie;
+
+    fprintf(stderr, "Should do file %s here\n", file);
+    if( strcmp(file, "-") == 0 ) {
+        fp = stdin;
+    } else {
+        fp = fopen(file, "r");
+    }
+    if( fp == NULL ) {
+        return -1;
+    }
+    res = getc(fp);
+    res = ungetc(res, fp);
+    if( res == EOF ) {
+        fprintf(stderr, "Could not getc, ungetc on %s\n", file);
+        return 0;
+    }
+    if( res == 0 ) {
+        fprintf(stderr, "0x00-spec not implemented: %s\n", file);
+        errno = ENOSYS;
+        return -1;
+    }
+    fprintf(stderr, "Should read lines from %s here\n", file);
+    while( getline(&line, &linelen, fp) != -1 ) {
+        fprintf(stderr, "Should deal with line here: %s\n", line);
+        envvar = strtok_r(line, WHITESPACE, &saveptr);
+        mountpoint = strtok_r(NULL, WHITESPACE, &saveptr);
+        mountflags = strtok_r(NULL, WHITESPACE, &saveptr);
+        fuseopts = strtok_r(NULL, WHITESPACE, &saveptr);
+        cookie = strtok_r(NULL, WHITESPACE, &saveptr);
+        if(
+            envvar == NULL
+            && mountpoint == NULL
+            && mountflags == NULL
+            && fuseopts == NULL
+            && cookie == NULL
+        ) {
+            continue;
+        }
+        if(
+            envvar == NULL
+            || mountpoint == NULL
+            || mountflags == NULL
+            || fuseopts == NULL
+            || cookie == NULL
+        ) {
+            free(line);
+            line = NULL;
+            saveptr = NULL;
+
+            errno = EINVAL;
+            return -1;
+        }
+        if( *envvar != '#' ) {
+            fprintf(stderr, "Should do mount here for %s, %s, %s, %s, %s\n", envvar, mountpoint, mountflags, fuseopts, cookie);
+            if( do_mountspec(envvar, mountpoint, mountflags, fuseopts, cookie) == -1 ) {
+                break;
+            }
+        }
+        free(line);
+        line = NULL;
+        saveptr = NULL;
+    }
+    free(line);
+    if( fp != stdin ) {
+        fclose(fp);
+    }
+    return ( errno == 0 ? 0 : -1 ) ;
+}
+
+int do_mountspec(char *envvar, char *mountpoint, char *mountflags, char *fuseopts, char *cookie) {
+    int fd;
+    char *endptr = NULL;
+    int mntflgs = parse_mountflags(mountflags);
+
+    errno = 0;
+    fd = strtol(envvar, &endptr, 0);
+    if( errno == ERANGE ) {
+        return -1;
+    }
+    if( *endptr == '\0' ) {
+        if( get_fusefd(fuseopts) != fd ) {
+            errno = EINVAL;
+            return -1;
+        }
+        return do_exec(mountpoint, fuseopts, mntflgs, NULL, cookie, NULL);
+    }
+    return do_exec(mountpoint, fuseopts, mntflgs, envvar, cookie, NULL);
 }
