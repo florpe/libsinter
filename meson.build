@@ -10,6 +10,8 @@ libsinter = library(
   , sources: [
     'lib/mount.h'
     , 'lib/mount.c'
+    , 'lib/sinter.h'
+    , 'lib/sinter.c'
     ]
   , c_args: ['-Wall']
   , link_args: ['-lcap']
@@ -21,6 +23,8 @@ executable(
     'util/sinter.c'
     , 'lib/mount.h'
     , 'lib/mount.c'
+    , 'lib/sinter.h'
+    , 'lib/sinter.c'
     ]
   , c_args: ['-Wall']
   , link_args: ['-lcap']

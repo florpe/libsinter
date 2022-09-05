@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include "lib/mount.h"
+#include "lib/sinter.h"
 
 #define FUSEFDVAR "FUSEFD"
 
