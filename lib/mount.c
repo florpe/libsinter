@@ -172,7 +172,6 @@ int do_mount(char *mnt, char* options, int flags, char *cookie) {
         free(fusesource);
         return -1;
     }
-    fprintf(stderr, "Mounted!\n");
     free(fusesource);
 
     return 0;
@@ -215,7 +214,6 @@ int do_exec(char *mnt, char* options, int flags, char *fusefdvar, char *cookie, 
         close(fd);
         return -1;
     }
-    fprintf(stderr, "Mounted!\n");
     free(fusesource);
 
     if( fusefdvar != NULL && setenv_fd(fusefdvar, fd) == -1 ) {
@@ -235,7 +233,7 @@ int do_exec(char *mnt, char* options, int flags, char *fusefdvar, char *cookie, 
     return 0;
 }
 
-int do_fromfile (char *terminus, int argc, char *argv[]) {
+int do_fromfiles (char *terminus, int argc, char *argv[]) {
     /* Processes argv[] entries as files containing
      * a mount spec, terminating when the entry is equal to
      * terminus. If terminus is NULL, it processes all entries.
@@ -256,9 +254,8 @@ int do_fromfile (char *terminus, int argc, char *argv[]) {
     return count;
 }
 
-int do_fromfile_exec (int argc, char *argv[]) {
-    int count = 0;
-    count = do_fromfile("--", argc, argv);
+int do_fromfiles_exec (int argc, char *argv[]) {
+    int count = do_fromfiles("--", argc, argv);
     if( count == -1 ) {
         return -1;
     }
@@ -272,6 +269,19 @@ int do_fromfile_exec (int argc, char *argv[]) {
     }
     execvp(argv[count + 1], argv + count + 1);
     return -1; //To make the compiler happy
+}
+
+int do_fromfiles_noexec (int argc, char *argv[]) {
+    int count = do_fromfiles("--", argc, argv);
+    if( count == -1 ) {
+        return -1;
+    }
+    if( count == argc ) {
+        return 0;
+    }
+    fprintf(stderr, "Command separator -- found in noexec mode.\n");
+    errno = EINVAL;
+    return -1;
 }
 
 int do_singlefile (char *file) {
